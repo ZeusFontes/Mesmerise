@@ -30,33 +30,20 @@ while rodando:
             elif evento.type == pygame.KEYDOWN:
                 menu = False
     else:
-
-
         fundo = pygame.image.load(telas.salas[sala]).convert()
         fundo = pygame.transform.scale(fundo, config.resulucao[res])
 
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            print("Fechando...")
+            pygame.quit()
+        elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+            menu = True
+        else:
+            sala = telas.touch(sala,menu,evento)
         
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                rodando = False
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_UP:
-                sala = telas.validaSala(sala,"up")
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_DOWN:
-                sala = telas.validaSala(sala,"down")
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_LEFT:
-                sala = telas.validaSala(sala,"left")
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_RIGHT:
-                sala = telas.validaSala(sala,"right")
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
-                menu = True
-            elif evento.type == pygame.MOUSEBUTTONDOWN:
-                print(evento.pos)
 
     tela.blit(fundo, (0,0))
-    telas.points(sala,tela)
-
-
-    
     pygame.display.flip()
     
 pygame.quit()
