@@ -35,6 +35,7 @@ while rodando:
         fundo = pygame.image.load(telas.salas[sala]).convert()
         fundo = pygame.transform.scale(fundo, config.resulucao[res])
 
+        
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -48,10 +49,14 @@ while rodando:
                 sala = telas.validaSala(sala,"right")
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                 menu = True
-            
-
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                print(evento.pos)
 
     tela.blit(fundo, (0,0))
+    telas.points(sala,tela)
+
+
+    
     pygame.display.flip()
     
 pygame.quit()
