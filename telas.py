@@ -1,9 +1,9 @@
 import pygame
-salas = ("salas/sala0.png",
-        "salas/sala1.png",
-        "salas/sala2.png",
-        "salas/sala3.png",
-        "salas/sala4.png")
+salas = ("salas/sala0.jpg",
+        "salas/sala1.jpg",
+        "salas/sala2.jpg",
+        "salas/sala3.jpg",
+        "salas/sala4.jpg")
 
 def interacao(sala,move):
         
