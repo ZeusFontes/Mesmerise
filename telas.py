@@ -1,4 +1,6 @@
 import pygame
+
+
 salas = ("salas/sala0.jpg",
         "salas/sala1.jpg",
         "salas/sala2.jpg",
@@ -47,6 +49,8 @@ def interacao(sala,move):
                            return sala
                    if move == "voltar":
                            return 1
+
+        
 
 
 def touch(sala,menu,evento):
