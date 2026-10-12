@@ -21,6 +21,7 @@ alpha = 255
 
 texto = ""
 
+
 rodando = True
 menu = True
 apaga = False
@@ -48,6 +49,11 @@ caixa.set_alpha(177)
 # LOOP DO PROGRAMA 
     
 while rodando: 
+    if progress.state["acabou"]:
+         alpha += 5
+         if alpha >= 255:
+              rodando = False
+
 
     if destino != sala:
             apaga = True
@@ -62,7 +68,7 @@ while rodando:
         alpha -= 15
         if alpha <= 0:
             acende = False
-        print(progress.inventario["fuzivel"])
+
  #FOR DE EVENTOS#
     for evento in pygame.event.get():
         if menu:
@@ -94,7 +100,7 @@ while rodando:
 
     tela.blit(fundo, (0,0))
 
-    if menu == False:
+    if menu == False and texto != "":
             tela.blit(caixa, (40, 400))
             tela.blit(fonte.render(texto,True, (255, 255, 255)), (55,430))
             

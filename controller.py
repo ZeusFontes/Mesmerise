@@ -23,10 +23,15 @@ salas = ("salas/sala0.jpg",#elevador                             0
 
 def touch(sala,menu,evento,inventario,state):
         if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1 and menu == False:
-                if sala == 0: #elevador 
+                if sala == 0 or sala == 5: #elevador 
                         #PORTA PRINCIPAL
                         if pygame.Rect(327, 120, 148, 209).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                return sala, "Está trancada"
+                                if state["elevador"] == False:
+                                        return sala, "Está trancada"
+                                else:
+                                        state["acabou"] = True
+                                        return sala, ""
+                                        
                         #PAINEL ELEVADOR
                         elif pygame.Rect(282, 181, 43, 67).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
                                 return 6, ""
@@ -72,9 +77,9 @@ def touch(sala,menu,evento,inventario,state):
                         elif pygame.Rect(723, 214, 73, 137).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
                                 if state["portilha"] == 0: #trancado
                                         return 12, ""
-                                elif state["portilha"] == 1: #sem cartao
+                                elif state["portilha"] == 1: #sem cartao dentro
                                         return 11, ""
-                                elif state["portilha"] == 2: #com cartao
+                                elif state["portilha"] == 2: #com cartao dentro
                                         return 10, ""
                         #VOLTAR
                         elif pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
@@ -97,17 +102,6 @@ def touch(sala,menu,evento,inventario,state):
                         #VOLTAR
                         elif pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
                                 return 1, ""
-                elif sala == 5:#elevador aberto
-                        print("teste")
-                        #VOLTAR
-                        if pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                return 1, ""
-                        #PORTA PRINCIPAL
-                        elif pygame.Rect(327, 120, 148, 209).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                return sala, "Está trancada"
-                        #PAINEL ELEVADOR
-                        elif pygame.Rect(282, 181, 43, 67).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                return 6, ""
                 elif sala == 6:#painel elevador
                         #VOLTAR
                         if pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
@@ -117,7 +111,15 @@ def touch(sala,menu,evento,inventario,state):
                                         return 0, ""
                         #CLICAR PAINEL
                         elif pygame.Rect(318, 63, 162, 325).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                print("oi")
+                                if inventario["cartao"] and state["elevador"] == False:
+                                        state["elevador"] = True
+                                        return sala,"Você abriu a porta."
+                                elif inventario["cartao"] and state["elevador"] == True:
+                                        return sala,"A porta está aberta"
+                                elif inventario["cartao"] == False:
+                                        return sala,"Aparenta precisar de um cartão de acesso..."
+                                
+                                
                 elif sala == 7 or sala == 8 :#FUZIVEL corredor
                         #VOLTAR
                         if pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
@@ -138,6 +140,7 @@ def touch(sala,menu,evento,inventario,state):
                                 return 3, ""
                         #CLICAR RELOGIO
                         elif pygame.Rect(116, 44, 600, 450).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
+                                inventario["horas"] = True;
                                 return sala, "São 7:45"
                 elif sala == 10 or sala == 11 or sala == 12:#portilha relogio
                         #VOLTAR
@@ -145,14 +148,34 @@ def touch(sala,menu,evento,inventario,state):
                                 return 3, ""
                         #CLICAR PORTINHOLA
                         elif pygame.Rect(253, 82, 318, 305).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                print("oi")
+                                if inventario["chave"] == False:
+                                        return sala, "Está trancado, precisa de chave..."
+                                elif inventario["chave"] and state["portilha"] == 0:
+                                        state["portilha"] = 2
+                                        return 10, ""
+                                elif state["portilha"] == 2:
+                                        inventario["cartao"] = True
+                                        state["portilha"] = 1
+                                        return 11, ""
+                                elif state["portilha"] == 2:
+                                        return sala, "Você já pegou o cartão"
+
                 elif sala == 13 or sala == 14 or sala == 17:#close manequim
                         #VOLTAR
                         if pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
                                 return 4, ""
                         #CLICAR MANEQUIM
                         elif pygame.Rect(169, 3, 525, 493).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:
-                                print("oi")
+                                if inventario["horas"] == False:
+                                        return sala, "??: Que horas são meu caro cavalheiro?"
+                                elif inventario["horas"] == True and state["cabeca_chave"] == False:
+                                        state["cabeca_chave"] = True
+                                        return 14, ""
+                                elif inventario["horas"] == True and state["cabeca_chave"] == True:
+                                        inventario["chave"] = True
+                                        return 17, ""
+
+                        
                 elif sala == 15 or sala == 16:#portilha manequim fuzivel
                         #VOLTAR
                         if pygame.Rect(1, 412, 797, 82).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:

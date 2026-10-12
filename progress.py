@@ -11,5 +11,6 @@ state = {
     "cabeca_chave": False,
     "fuzivel_parede2": False,
     "elevador": False,
-    "portilha": 0
+    "portilha": 0,
+    "acabou": False
 }
