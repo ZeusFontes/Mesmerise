@@ -13,7 +13,7 @@ def calcular_rect(texto):
     largura = abs(x2 - x1)
     altura = abs(y2 - y1)
 
-    return f"nome = pygame.Rect({x}, {y}, {largura}, {altura})"
+    return f"pygame.Rect({x}, {y}, {largura}, {altura}).collidepoint(evento.pos) and evento.type == pygame.MOUSEBUTTONDOWN:"
 
 
 while True:

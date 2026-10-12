@@ -1,0 +1,19 @@
+
+#painel elevador                    6
+
+#painel corredor fuzivel            7
+#painel corredor                    8
+
+#close relogio                      9
+
+#portilha relogio cartao            10
+#portilha relogio aberto            11
+#portilha relogio fechado           12
+
+# close manequim                    13
+#close manequim chave               14
+#close manequim sem cabeça e chave   17
+
+#portilha manequim fuzivel          15
+#portilha manequim                  16
+        

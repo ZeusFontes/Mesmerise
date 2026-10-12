@@ -1,8 +1,9 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pygame
-import telas
+import controller
 import config
+import progress
 
 pygame.init()
 
@@ -35,7 +36,7 @@ tela = pygame.display.set_mode(config.resulucao[res])
 relogio = pygame.time.Clock()
 
 fundo_menu = carregar("salas/menu.jpg")
-fundos = [carregar(c) for c in telas.salas]
+fundos = [carregar(c) for c in controller.salas]
 
 preta = pygame.Surface((1920,1080))
 preta.fill((0,0,0))
@@ -61,8 +62,7 @@ while rodando:
         alpha -= 15
         if alpha <= 0:
             acende = False
-        
-
+        print(progress.inventario["fuzivel"])
  #FOR DE EVENTOS#
     for evento in pygame.event.get():
         if menu:
@@ -77,12 +77,11 @@ while rodando:
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
             menu = True
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-            touch = telas.touch(sala,menu,evento)
+            touch = controller.touch(sala,menu,evento,progress.inventario,progress.state)
+           #print(evento.pos)
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_j:
-             print("teste")
-             teste = telas.teste()
-             print(teste)
-             print(teste[0])
+             progress.cartao = True
+
 
     destino = touch[0]
     texto = touch[1]
@@ -102,6 +101,6 @@ while rodando:
     preta.set_alpha(alpha)
     tela.blit(preta,(0,0))
     pygame.display.flip()
-    relogio.tick(config.fps[fps])
+    relogio.tick(config.fps)
     
 pygame.quit()
