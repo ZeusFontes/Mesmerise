@@ -33,6 +33,16 @@ def carregar(caminho):
     img = pygame.image.load(caminho).convert()
     return pygame.transform.scale(img, config.resulucao[res])
 
+def tocar(caminho):
+     pygame.mixer.music.fadeout(500)
+     pygame.mixer.music.load(caminho)
+     pygame.mixer.music.set_volume(0.2)
+     pygame.mixer.music.play(-1, fade_ms=500) 
+
+som_andar = pygame.mixer.Sound("sounds/walk.mp3")
+tocarmenu = "sounds/menu.mp3"
+tocarjogo = "sounds/jogo.mp3"
+
 tela = pygame.display.set_mode(config.resulucao[res])
 relogio = pygame.time.Clock()
 
@@ -46,6 +56,8 @@ caixa = pygame.Surface((720, 80))
 caixa.fill((0, 0, 0))
 caixa.set_alpha(177)
 
+if menu:
+    tocar(tocarmenu)
 # LOOP DO PROGRAMA 
     
 while rodando: 
@@ -54,12 +66,13 @@ while rodando:
          if alpha >= 255:
               rodando = False
 
-
     if destino != sala:
             apaga = True
 
     if apaga == True:
         alpha += 15
+        if alpha == 15:
+            som_andar.play()
         if alpha >= 255:
             sala = destino
             apaga = False
@@ -69,17 +82,20 @@ while rodando:
         if alpha <= 0:
             acende = False
 
+
  #FOR DE EVENTOS#
     for evento in pygame.event.get():
         if menu:
             if evento.type == pygame.KEYDOWN:
+                tocar(tocarjogo)
                 alpha = 255
                 acende = True
                 menu = False
+
              
         if evento.type == pygame.QUIT:
             print("Fechando...")
-            rodando = False
+            progress.state["acabou"] = True
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
             menu = True
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
@@ -108,5 +124,5 @@ while rodando:
     tela.blit(preta,(0,0))
     pygame.display.flip()
     relogio.tick(config.fps)
-    
+
 pygame.quit()
