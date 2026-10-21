@@ -4,6 +4,10 @@ import pygame
 import controller
 import config
 import progress
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+
+
 
 pygame.init()
 
@@ -15,7 +19,6 @@ fonte = pygame.font.SysFont(None,28)
 
 sala = 0
 destino = 0
-res = 0
 fps = 0
 alpha = 255
 
@@ -26,24 +29,30 @@ rodando = True
 menu = True
 apaga = False
 acende = True
-touch = (0,'')
+
+touch = (0,'','')
 
 
 def carregar(caminho):
     img = pygame.image.load(caminho).convert()
-    return pygame.transform.scale(img, config.resulucao[res])
-
+    if caminho == "salas/menu.jpg":
+          return pygame.transform.scale(img, config.resulucao[config.res])
+    else:
+        return pygame.transform.scale(img, config.imagem)
+    
 def tocar(caminho):
      pygame.mixer.music.fadeout(500)
      pygame.mixer.music.load(caminho)
      pygame.mixer.music.set_volume(0.2)
      pygame.mixer.music.play(-1, fade_ms=500) 
 
-som_andar = pygame.mixer.Sound("sounds/walk.mp3")
+
+
+
 tocarmenu = "sounds/menu.mp3"
 tocarjogo = "sounds/jogo.mp3"
 
-tela = pygame.display.set_mode(config.resulucao[res])
+tela = pygame.display.set_mode(config.resulucao[config.res])
 relogio = pygame.time.Clock()
 
 fundo_menu = carregar("salas/menu.jpg")
@@ -52,15 +61,38 @@ fundos = [carregar(c) for c in controller.salas]
 preta = pygame.Surface((1920,1080))
 preta.fill((0,0,0))
 
-caixa = pygame.Surface((720, 80))
+caixa = pygame.Surface((config.escalar2(900, 80,config.resulucao,config.res)))
 caixa.fill((0, 0, 0))
-caixa.set_alpha(177)
+caixa.set_alpha(255)
+
+largura1, altura1 = config.resulucao[config.res]
+largura2, altura2 = config.imagem
+
 
 if menu:
     tocar(tocarmenu)
 # LOOP DO PROGRAMA 
     
 while rodando: 
+    print(progress.mochila)
+    progress.mochiladef(progress.inventario)
+
+    # ATUALIZAÇÃO DO CURSOR DO RATO
+    if not menu:
+      mouse_pos = pygame.mouse.get_pos()
+      retangulos_atuais = controller.obter_retangulos(sala)
+
+      if any(ret.collidepoint(mouse_pos) for ret in retangulos_atuais):
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+      else:
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+    else:
+      pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+
+
+
+
     if progress.state["acabou"]:
          alpha += 5
          if alpha >= 255:
@@ -72,7 +104,9 @@ while rodando:
     if apaga == True:
         alpha += 15
         if alpha == 15:
-            som_andar.play()
+            if som != "":
+                 tocarsom.play()
+            
         if alpha >= 255:
             sala = destino
             apaga = False
@@ -100,11 +134,11 @@ while rodando:
             menu = True
         elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
             touch = controller.touch(sala,menu,evento,progress.inventario,progress.state)
-           #print(evento.pos)
+            print(evento.pos)
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_j:
              progress.cartao = True
 
-
+    som = touch[2]
     destino = touch[0]
     texto = touch[1]
 
@@ -113,16 +147,25 @@ while rodando:
         fundo = fundo_menu
     else:
         fundo = fundos[sala]
+    if menu:
+        tela.blit(fundo, (0,0))
+    else:
+        tela.blit(fundo, ((largura1-largura2) /2,(altura1 - altura2) / 2 - 50))
+    
 
-    tela.blit(fundo, (0,0))
+    #if not menu:
+    #  controller.colisoes(sala, tela)
+    
 
     if menu == False and texto != "":
-            tela.blit(caixa, (40, 400))
-            tela.blit(fonte.render(texto,True, (255, 255, 255)), (55,430))
-            
+            tela.blit(caixa, (config.escalar2(40, 400,config.resulucao,config.res)))
+            tela.blit(fonte.render(texto,True, (255, 255, 255)), config.escalar2(140,420,config.resulucao,config.res))
+    if som != "":
+        tocarsom = pygame.mixer.Sound(som)
+        tocarsom.set_volume(0.2)
     preta.set_alpha(alpha)
     tela.blit(preta,(0,0))
     pygame.display.flip()
-    relogio.tick(config.fps)
+    relogio.tick(60)
 
 pygame.quit()
