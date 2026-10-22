@@ -1,6 +1,6 @@
 import pygame
 resulucao = [(800,500),(1280,800),(1440,900),(1680,1050),(1920,1200)]
-res = 2
+res = 1
 
 imagem = ((resulucao[res][0] / 3) *2,(resulucao[res][1] / 3) *2 )
 fps = 60

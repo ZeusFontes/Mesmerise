@@ -119,7 +119,7 @@ def touch(sala,menu,evento,inventario,state):
                                         state["elevador"] = True
                                         inventario["cartao"] = False
                                         return 18,"Você abriu a porta.", "./sounds/elevator.mp3"
-                                elif inventario["cartao"] and state["elevador"] == True:
+                                elif state["elevador"] == True:
                                         return sala,"A porta está aberta", ""
                                 elif inventario["cartao"] == False:
                                         return sala,"Aparenta precisar de um cartão de acesso...", ""

@@ -21,9 +21,10 @@ sala = 0
 destino = 0
 fps = 0
 alpha = 255
+som = ""
 
 texto = ""
-
+mochila_antiga = progress.mochila.copy()
 
 rodando = True
 menu = True
@@ -39,6 +40,7 @@ def carregar(caminho):
           return pygame.transform.scale(img, config.resulucao[config.res])
     else:
         return pygame.transform.scale(img, config.imagem)
+
     
 def tocar(caminho):
      pygame.mixer.music.fadeout(500)
@@ -61,24 +63,45 @@ fundos = [carregar(c) for c in controller.salas]
 preta = pygame.Surface((1920,1080))
 preta.fill((0,0,0))
 
+
 caixa = pygame.Surface((config.escalar2(900, 80,config.resulucao,config.res)))
 caixa.fill((0, 0, 0))
 caixa.set_alpha(255)
 
+
+tamanho_slot = config.escalar2(50, 50, config.resulucao, config.res)
+caminhoicone = [
+    "./salas/icon_vazio.png",
+    "./salas/icon_vazio.png",
+    "./salas/icon_vazio.png",
+    "./salas/icon_vazio.png"
+]
+
+imgicon = ['', '', '', '', '']
+
+def carregaricon(caminhoicone,tamanho_slot):
+    imgicon = pygame.image.load(caminhoicone).convert()
+    return pygame.transform.scale(imgicon, tamanho_slot)
+
+inicio_icon = pygame.image.load("./salas/icon_vazio.png").convert()
+inv1 = pygame.transform.scale(inicio_icon, tamanho_slot)
+inv2 = pygame.transform.scale(inicio_icon, tamanho_slot)
+inv3 = pygame.transform.scale(inicio_icon, tamanho_slot)
+inv4 = pygame.transform.scale(inicio_icon, tamanho_slot)
+
+
 largura1, altura1 = config.resulucao[config.res]
 largura2, altura2 = config.imagem
-
 
 if menu:
     tocar(tocarmenu)
 # LOOP DO PROGRAMA 
-    
 while rodando: 
-    print(progress.mochila)
+
+
     progress.mochiladef(progress.inventario)
 
-    # ATUALIZAÇÃO DO CURSOR DO RATO
-    if not menu:
+    if not menu and not acende and not apaga:
       mouse_pos = pygame.mouse.get_pos()
       retangulos_atuais = controller.obter_retangulos(sala)
 
@@ -89,7 +112,7 @@ while rodando:
     else:
       pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
-
+    print(f"mochila = {progress.mochila} | mochila antiga = {mochila_antiga}")
 
 
 
@@ -117,6 +140,7 @@ while rodando:
             acende = False
 
 
+
  #FOR DE EVENTOS#
     for evento in pygame.event.get():
         if menu:
@@ -126,23 +150,61 @@ while rodando:
                 acende = True
                 menu = False
 
-             
         if evento.type == pygame.QUIT:
             print("Fechando...")
             progress.state["acabou"] = True
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
             menu = True
-        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-            touch = controller.touch(sala,menu,evento,progress.inventario,progress.state)
-            print(evento.pos)
+        elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1: 
+            if not apaga and not acende:
+                touch = controller.touch(sala,menu,evento,progress.inventario,progress.state)
+
+                if touch[2] == '':
+                    som = "./sounds/click.mp3"
+
+            #print(evento.pos)
         elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_j:
              progress.cartao = True
 
-    som = touch[2]
+    if mochila_antiga != progress.mochila:
+        mochila_antiga = progress.mochila.copy()
+        for i in range(len(caminhoicone)):
+            caminhoicone[i] = "salas/icon_vazio.png"
+        for i, item in enumerate(progress.mochila):
+            if i < len(caminhoicone):
+                match item:
+                    case "fuzivel":
+                        caminhoicone[i] = "salas/icon_fuzivel.png"
+                    case "chave":
+                        caminhoicone[i] = "salas/icon_chave.png"
+                    case "cartao":
+                        caminhoicone[i] = "salas/icon_cartao.png"
+                    case _:
+                        caminhoicone[i] = "salas/icon_vazio.png"
+        
+        inv1 = carregaricon(caminhoicone[0],tamanho_slot)
+        inv2 = carregaricon(caminhoicone[1],tamanho_slot)
+        inv3 = carregaricon(caminhoicone[2],tamanho_slot)
+        inv4 = carregaricon(caminhoicone[3],tamanho_slot)
+        if progress.mochila == []:
+            inv1 = carregaricon("salas/icon_vazio.png",tamanho_slot)
+            inv2 = carregaricon("salas/icon_vazio.png",tamanho_slot)
+            inv3 = carregaricon("salas/icon_vazio.png",tamanho_slot)
+            inv4 = carregaricon("salas/icon_vazio.png",tamanho_slot)
+
+    #print(touch)
+    if touch[2] != '':
+        som = touch[2]
+
     destino = touch[0]
     texto = touch[1]
+    #print(som)
 
     #RENDERIZAÇÃO
+
+#iventario
+    
+
     if menu:
         fundo = fundo_menu
     else:
@@ -155,7 +217,11 @@ while rodando:
 
     #if not menu:
     #  controller.colisoes(sala, tela)
-    
+    if menu == False:
+        tela.blit(inv1,(config.escalar2(673, 32,config.resulucao,config.res)))
+        tela.blit(inv2,(config.escalar2(733, 32,config.resulucao,config.res)))
+        tela.blit(inv3,(config.escalar2(673, 92,config.resulucao,config.res)))
+        tela.blit(inv4,(config.escalar2(733, 92,config.resulucao,config.res)))
 
     if menu == False and texto != "":
             tela.blit(caixa, (config.escalar2(40, 400,config.resulucao,config.res)))
@@ -163,6 +229,9 @@ while rodando:
     if som != "":
         tocarsom = pygame.mixer.Sound(som)
         tocarsom.set_volume(0.2)
+    if som == "./sounds/click.mp3":
+        tocarsom.play()
+        som = ""
     preta.set_alpha(alpha)
     tela.blit(preta,(0,0))
     pygame.display.flip()

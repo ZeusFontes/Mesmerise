@@ -19,10 +19,8 @@ mochila = []
 
 def mochiladef(inventario):  
 
-    if inventario[0] and "fuzivel" not in mochila:
+    if inventario["fuzivel"] and "fuzivel" not in mochila:
         mochila.append("fuzivel")
-    if inventario["horas"] and "horas" not in mochila:
-        mochila.append("horas")
     if inventario["chave"] and "chave" not in mochila:
         mochila.append("chave")
     if inventario["cartao"] and "cartao" not in mochila:
@@ -30,8 +28,6 @@ def mochiladef(inventario):
 
     if inventario["fuzivel"] == False and "fuzivel"  in mochila:
             mochila.remove("fuzivel")
-    if inventario["horas"] == False and "horas"  in mochila:
-            mochila.remove("horas")
     if inventario["chave"] == False and "chave"  in mochila:
             mochila.remove("chave")
     if inventario["cartao"] == False and "cartao"  in mochila:
