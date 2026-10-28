@@ -1,0 +1,18 @@
+{
+    "sala": 19,
+    "inventario": {
+        "fuzivel": false,
+        "horas": false,
+        "chave": false,
+        "cartao": false
+    },
+    "state": {
+        "fuzivel_parede1": true,
+        "cabeca_chave": false,
+        "fuzivel_parede2": false,
+        "elevador": false,
+        "portilha": 0,
+        "acabou": false
+    },
+    "ultima_sala": 0
+}

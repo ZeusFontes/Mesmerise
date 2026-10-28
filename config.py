@@ -1,10 +1,16 @@
 import pygame
+res = 0
+vol = 0.2
+volmusica = 0.2
+fullscreen_ativo = False
 resulucao = [(800,500),(1280,800),(1440,900),(1680,1050),(1920,1200)]
-res = 1
-
 imagem = ((resulucao[res][0] / 3) *2,(resulucao[res][1] / 3) *2 )
 fps = 60
-def escalar(esquerda,topo,largura,altura,resolucao,res):
+
+menu = True
+
+
+def escalar(esquerda,topo,largura,altura,resulucao,res):
     largura1 = resulucao[res][0]
     altura1 = resulucao[res][1]
     largura2 = (resulucao[res] [0] / 3 ) *2
@@ -22,3 +28,8 @@ def escalar2(x,y,resolucao,res):
     x2 = (x / 800) * resolucao[res][0]
     y2 = (y / 500) * resolucao[res][1]
     return x2,y2
+
+def escalar_cheio(esquerda, topo, largura, altura, resulucao, res):
+    w, h = resulucao[res]
+    return ((esquerda/800) * w, (topo/500) * h,
+            (largura/800) * w, (altura/500) * h)
